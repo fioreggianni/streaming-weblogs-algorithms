@@ -1,0 +1,45 @@
+{
+  "name": "streaming-weblogs-algorithms",
+  "version": "1.0.0",
+  "description": "A collection of algorithms appliable to a stream of weblogs",
+  "main": "tester.js",
+  "dependencies": {
+    "ascii-histogram": "^1.2.1",
+    "bytes": "^2.4.0",
+    "colors": "^1.1.2",
+    "cyclist": "^1.0.1",
+    "jetty": "^0.2.1",
+    "lodash": "^4.16.6",
+    "lodash.defaultsdeep": "^4.6.0",
+    "memwatch-next": "^0.3.0",
+    "moment": "^2.15.2",
+    "progress": "^1.1.8",
+    "sha1": "^1.1.1",
+    "timely": "^0.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "massive-test": "node testers/massive-tester.js",
+    "stream-test": "node testers/stream-tester.js",
+    "unique-test": "node testers/unique-tester.js",
+    "tops-test": "node testers/tops-tester.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fioreggianni/streaming-weblogs-algorithms.git"
+  },
+  "keywords": [
+    "streaming",
+    "weblogs",
+    "algorithms",
+    "data",
+    "mining",
+    "tracking"
+  ],
+  "author": "Gianni Fiore",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fioreggianni/streaming-weblogs-algorithms/issues"
+  },
+  "homepage": "https://github.com/fioreggianni/streaming-weblogs-algorithms#readme"
+}
