@@ -1,10 +1,10 @@
 var moment = require("moment")
-var Consumer = require("./consumer.js")
-var Factory = require("./item_factory.js")
+var Consumer = require("../consumer.js")
+var Factory = require("../item_factory.js")
 var ProgressBar = require('progress')
-var config = require("./config.js")
+var config = require("../config.js")
 var colors = require("colors/safe")
-var utils = require("./lib/utils.js")
+var utils = require("../lib/utils.js")
 
 var consumer = Consumer(config.consumer)
 var factory = Factory(config.factory)
@@ -31,17 +31,3 @@ var res = {
 }
 
 console.log("Unique ips: %s/%s (real: %s)", res.uniques, res.total, res.real)
-var error = (Math.abs(res.uniques-res.real)/res.total)*100
-console.log("Accuracy: "+((error < 5) ? colors.green((100 - error).toFixed(3)+"%") : colors.red((100 - error).toFixed(3)+"%")))
-
-res = {
-	uniques: consumer.uniques(null, config.tester.iterations/2),
-	total: config.tester.iterations/2,
-	real: config.tester.ips
-}
-console.log("Unique ips from half on: %s/%s (real: %s)", res.uniques, res.total, res.real)
-error = (Math.abs(res.uniques-res.real)/res.total)*100
-console.log("Accuracy: "+((error < 5) ? colors.green((100 - error).toFixed(3)+"%") : colors.red((100 - error).toFixed(3)+"%")))
-
-console.log("Memory: %s bytes", consumer.memory() * 4)
-
