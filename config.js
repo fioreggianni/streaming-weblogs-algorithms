@@ -1,4 +1,4 @@
-var config = {
+module.exports = {
 	tester: {
 		ips: process.env.IPS,
 		keys: process.env.KEYS,
