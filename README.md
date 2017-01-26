@@ -8,3 +8,5 @@ To change parameters specifically: `ITERATIONS=100000 IPS=512 INSTANCES=50 INSTA
 - `npm run sliding-count-test`: live console histograms showing total items in recent timeframes, 
 having a items stream producer generating a batch of 10 items every 1000 milliseconds, using 10 different keys (identifiers of the item category).
 To change parameters specifically: `KEYS=10 BATCHMAX=10 BATCHRATE=1000 npm run unique-test`
+
+![A gif demo: sliding window counters aggregation](static/img/demo.gif?raw=true "Demo")
