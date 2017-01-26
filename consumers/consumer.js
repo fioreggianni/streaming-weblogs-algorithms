@@ -1,6 +1,6 @@
 var moment = require("moment")
 var sha1 = require('sha1')
-var utils = require("./lib/utils.js")
+var utils = require("../lib/utils.js")
 var lo = require('lodash/array')
 
 module.exports = function(config){
@@ -26,8 +26,8 @@ module.exports = function(config){
 	this.initKey = function(key){
 		if (!state.groups[key]) {
 			state.groups[key] = []
-			state.totals[key] = 0
-			state.timebatches[key] = {
+			if (cfg.features.count) state.totals[key] = 0
+			if (cfg.features.sliding) state.timebatches[key] = {
 				seconds: { },
 				minutes: { },
 				hours: { }
@@ -70,28 +70,31 @@ module.exports = function(config){
 	this.consume = function(item){
 		var key = item.key
 		this.initKey(key)
-		state.totals[key] += 1
-		state.totals[DEFAULT_GROUP] += 1
-		populateBatch(item, "seconds")
-		populateBatch(item, "minutes")
-		populateBatch(item, "hours")
-		for (var k=1; k<=cfg.instances; k++){
-			var h = utils.hashToBits(item.x, state.seeds[k])
-			var tz = utils.countTrailingZeroes(h)
-			state.groups[key][k][tz] = item.timestamp
-			state.groups[DEFAULT_GROUP][k][tz] = item.timestamp
+		if (cfg.features.count){
+			state.totals[key] += 1
+			state.totals[DEFAULT_GROUP] += 1			
+		}
+		if (cfg.features.sliding){
+			populateBatch(item, "seconds")
+			populateBatch(item, "minutes")
+			populateBatch(item, "hours")
+		}
+		if (cfg.features.unique){
+			for (var k=1; k<=cfg.instances; k++){
+				var h = utils.hashToBits(item.x, state.seeds[k])
+				var tz = utils.countTrailingZeroes(h)
+				state.groups[key][k][tz] = item.timestamp
+				state.groups[DEFAULT_GROUP][k][tz] = item.timestamp
+			}			
 		}
 		return this
 	}
 
-	this.memory = function(){
-		return (cfg.instances + 1) * Object.keys(state.groups).length
-	}
-
 	this.total = function(key, from){
+		if (!cfg.features.count) return 0
 		key = key || DEFAULT_GROUP
 		from = from || { units: 60, type: "seconds"}
-		if (!from) return state.totals[key] || 0
+		if (!from || !cfg.features.sliding) return state.totals[key] || 0
 		var tot = 0
 		for (var k in state.timebatches[key][from.type]){
 			tot += state.timebatches[key][from.type][k]
@@ -111,6 +114,7 @@ module.exports = function(config){
 	}
 
 	this.histogram = function(key, window){
+		if (!cfg.features.sliding) return {}
 		key = key || DEFAULT_GROUP
 		window = window || { units: 60, type: "seconds"}
 		var start = Math.floor(moment().subtract(window.units, window.type).unix() / secondsIn(window.type)) * secondsIn(window.type)
@@ -129,6 +133,7 @@ module.exports = function(config){
 	}
 
 	this.uniques = function(key, from){
+		if (!cfg.features.unique) return 0
 		key = key || DEFAULT_GROUP 
 		from = from || 0
 		if (!state.groups[key]) return 0

@@ -1,10 +1,30 @@
 var moment = require("moment")
-var Consumer = require("../consumer.js")
-var Factory = require("../item_factory.js")
-var config = require("../config.js")
+var Consumer = require("../consumers/consumer.js")
+var Factory = require("../factories/item_factory.js")
 var ProgressBar = require('progress')
-var colors = require("colors/safe")
+var config = require("../config.js")
 var utils = require("../lib/utils.js")
+var colors = require("colors/safe")
+var defaultsDeep = require('lodash.defaultsdeep')
+
+var defaultConfig = {
+	tester: {
+		ips: 256,
+		keys: 150,
+		iterations: 100000
+	},
+	consumer: {
+		instances: 50,
+		instanceGroups: 5,
+		correction: 1,
+		features: {
+			unique: true,
+			count: true
+		}
+	}
+}
+
+config = defaultsDeep(config,defaultConfig)
 var consumer = Consumer(config.consumer)
 var factory = Factory(config.factory)
 
@@ -30,5 +50,3 @@ var res = {
 }
 
 console.log("Unique ips: %s/%s (real: %s)", res.uniques, res.total, res.real)
-var error = (Math.abs(res.uniques-res.real)/res.total)*100
-console.log("Accuracy: "+((error < 5) ? colors.green((100 - error).toFixed(3)+"%") : colors.red((100 - error).toFixed(3)+"%")))

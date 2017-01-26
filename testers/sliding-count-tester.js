@@ -1,12 +1,42 @@
 var moment = require("moment")
-var Consumer = require("../consumer.js")
-var Factory = require("../item_factory.js")
+var Consumer = require("../consumers/consumer.js")
+var Factory = require("../factories/item_factory.js")
 var config = require("../config.js")
-var colors = require("colors/safe")
 var utils = require("../lib/utils.js")
-var histogram = require('ascii-histogram');
+var colors = require("colors/safe")
+var histogram = require('ascii-histogram')
 var bytes = require('bytes')
-  
+var defaultsDeep = require('lodash.defaultsdeep')
+
+var defaultConfig = {
+	tester: {
+		ips: 10,
+		keys: 10,
+		rate: 1000
+	},
+	consumer: {
+		window: {
+			max: {
+				"seconds": 5,
+				"minutes": 10,
+				"hours": 24
+			},
+			clearAt: 2
+		},
+		features: {
+			unique: false,
+			count: true,
+			sliding: true
+		}
+	},
+	producer: {
+		batchmax: 10,
+		batchrate: 1000
+	}
+}
+
+config = defaultsDeep(config,defaultConfig)
+
 var consumer = Consumer(config.consumer)
 var factory = Factory(config.factory)
 

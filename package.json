@@ -19,10 +19,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "massive-test": "node testers/massive-tester.js",
-    "stream-test": "node testers/stream-tester.js",
     "unique-test": "node testers/unique-tester.js",
-    "tops-test": "node testers/tops-tester.js"
+    "sliding-count-test": "node testers/sliding-count-tester.js"
   },
   "repository": {
     "type": "git",
